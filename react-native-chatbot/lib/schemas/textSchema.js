@@ -35,6 +35,11 @@ export default [
     required: false,
   },
   {
+    key: 'hideText',
+    types: ['boolean'],
+    required: false,
+  },
+  {
     key: 'metadata',
     types: ['object'],
     required: false,

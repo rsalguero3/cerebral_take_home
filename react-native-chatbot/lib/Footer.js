@@ -6,7 +6,7 @@ const Footer = styled.View`
     if (props.disabled && !props.invalid) {
       return '#ddd';
     }
-    return props.invalid ? '#E53935' : props.color;
+    return '#ddd';
   }};
   display: flex;
   flex-direction: row;

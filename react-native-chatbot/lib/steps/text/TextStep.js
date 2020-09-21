@@ -6,6 +6,8 @@ import ImageContainer from './ImageContainer';
 import Loading from '../common/Loading';
 import TextStepContainer from './TextStepContainer';
 import TextMessage from './TextMessage';
+import STRINGS from '../../../../constant/strings';
+import COLOR from '../../../../constant/colors';
 
 class TextStep extends Component {
   /* istanbul ignore next */
@@ -47,7 +49,12 @@ class TextStep extends Component {
       });
     }
 
-    message = message.replace(/{previousValue}/g, previousValue);
+    if(step.hideText) {
+      message = message.replace(/./g, '*');
+    } else {
+      message = message.replace(/{previousValue}/g, previousValue);
+    }
+
 
     return message;
   }
@@ -72,6 +79,8 @@ class TextStep extends Component {
     } = step;
 
     const showAvatar = user ? !hideUserAvatar : !hideBotAvatar;
+    const userName = user ? STRINGS.CHAT_USER : STRINGS.CHAT_BOT;
+    const chatColor = user ? COLOR.CHAT_USER : COLOR.CHAT_BOT
 
     return (
       <TextStepContainer
@@ -106,6 +115,16 @@ class TextStep extends Component {
           isLast={isLast}
         >
           { this.state.loading && <Loading color={fontColor} /> }
+          {
+            !this.state.loading &&
+            <TextMessage
+              className="rsc-ts-text"
+              fontColor={chatColor}
+              fontSize={20}
+            >
+              {userName}{':'}
+            </TextMessage>
+          }
           {
             !this.state.loading &&
             <TextMessage

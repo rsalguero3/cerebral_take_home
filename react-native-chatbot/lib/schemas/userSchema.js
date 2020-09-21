@@ -20,6 +20,11 @@ export default [
     required: false,
   },
   {
+    key: 'validation',
+    types: ['string', 'boolean'],
+    required: false,
+  },
+  {
     key: 'end',
     types: ['boolean'],
     required: false,
@@ -27,6 +32,11 @@ export default [
   {
     key: 'inputAttributes',
     types: ['object'],
+    required: false,
+  },
+  {
+    key: 'hideText',
+    types: ['boolean'],
     required: false,
   },
   {

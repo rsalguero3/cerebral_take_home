@@ -10,8 +10,18 @@ const Button = styled.TouchableOpacity`
   height: 50;
   width: 80;
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: center;
+  shadowColor: "#000",
+  shadowOffset: {
+  width: 0;
+  height: 3;
+};
+ shadowOpacity: 0.29;
+ shadowRadius: 4.65;
+
+ elevation: 7;
 `;
 
 export default Button;
