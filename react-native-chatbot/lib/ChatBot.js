@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import React, { Component } from 'react';
+import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
 import Random from 'random-id';
-import { Dimensions, Keyboard, TextInput, ScrollView, Platform } from 'react-native';
+import { Dimensions, Keyboard, TextInput, ScrollView, Platform, View, Text, Image } from 'react-native';
 import { CustomStep, OptionsStep, TextStep } from './steps/steps';
 import schema from './schemas/schema';
 import ChatBotContainer from './ChatBotContainer';
@@ -10,6 +10,10 @@ import InputView from './InputView';
 import Footer from './Footer';
 import Button from './Button';
 import ButtonText from './ButtonText';
+import COLOR from '../../constant/colors';
+import STRINGS from '../../constant/strings'
+import Img from './steps/text/Image';
+import ImageContainer from './steps/text/ImageContainer';
 
 const { height, width } = Dimensions.get('window');
 
@@ -66,9 +70,9 @@ class ChatBot extends Component {
     const defaultBotSettings = {
       delay: botDelay,
       avatar: botAvatar,
-      bubbleColor: botBubbleColor,
-      fontColor: botFontColor,
-      optionBubbleColor: optionBubbleColor,
+      bubbleColor: COLOR.WHITE,
+      fontColor: COLOR.CHAT_BOT,
+      optionBubbleColor: COLOR.WHITE,
       optionFontColor: optionFontColor
     };
     const defaultUserSettings = {
@@ -367,7 +371,9 @@ class ChatBot extends Component {
 
   checkInvalidInput() {
     const { currentStep, inputValue } = this.state;
-    const result = currentStep.validator(inputValue);
+    console.log(currentStep.validation);
+    console.log(currentStep.id);
+    const result = currentStep.validator(inputValue, currentStep.validation);
     const value = inputValue;
 
     if (typeof result !== 'boolean' || !result) {
@@ -493,25 +499,57 @@ class ChatBot extends Component {
 
     const styles = {
       input: {
-        borderWidth: 0,
+        borderWidth: 1,
+        borderColor: COLOR.CHAT_BORDER,
         color: inputInvalid ? '#E53935' : '#4a4a4a',
         fontSize: 14,
         opacity: !editable && !inputInvalid ? 0.5 : 1,
         paddingRight: 16,
         paddingLeft: 16,
-        height: 50,
+        paddingTop: 0,
+        margin: 10,
+        height: 60,
         width: width - 80,
+        backgroundColor: COLOR.WHITE,
+        flex: 2,
+      },
+      button: {
+        height: 60,
+        margin: 10,
       },
       content: {
         height: height - 50,
-        backgroundColor: '#eee',
+        backgroundColor: '#ffffff',
       },
+      keyboardInput: {
+        padding: 20,
+        backgroundColor: COLOR.CHAT_CONTAINER,
+        flexDirection: 'row',
+      },
+      buttonImage: {
+        height: 20,
+        resizeMode: 'contain',
+      },
+      header: {
+        height: 80,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      headerImage: {
+        margin: 20,
+      },
+      headerName: {
+        fontSize: 18,
+        flex: 1
+      }
     };
 
     const textInputStyle = Object.assign({}, styles.input, inputStyle);
     const scrollViewStyle = Object.assign({}, styles.content, contentStyle);
     const platformBehavior = Platform.OS === 'ios' ? 'padding' : 'height';
     const inputAttributesOverride = currentStep.inputAttributes || inputAttributes;
+    const hideText = currentStep.hideText;
 
     return (
       <ChatBotContainer
@@ -519,6 +557,18 @@ class ChatBot extends Component {
         style={style}
       >
         {!!headerComponent && headerComponent}
+        <View style={styles.header}>
+          <Img
+            className="rsc-ts-image"
+            style={styles.headerImage}
+            source={require('../../assets/images/ic_avatar.png')}
+            alt="avatar"
+          />
+          <Text style={styles.headerName}>
+            Cerebral
+          </Text>
+
+        </View>
         <ScrollView
           className="rsc-content"
           style={scrollViewStyle}
@@ -532,13 +582,8 @@ class ChatBot extends Component {
           behavior={platformBehavior}
           keyboardVerticalOffset={keyboardVerticalOffset}
         >
-          <Footer
-            className="rsc-footer"
-            style={footerStyle}
-            disabled={!editable}
-            invalid={inputInvalid}
-            color={botBubbleColor}
-          >
+          <View style={styles.keyboardInput}>
+
             <TextInput
               type="textarea"
               style={textInputStyle}
@@ -551,25 +596,23 @@ class ChatBot extends Component {
               underlineColorAndroid="transparent"
               invalid={inputInvalid}
               editable={editable}
+              secureTextEntry={hideText}
               {...inputAttributesOverride}
             />
             <Button
               className="rsc-button"
-              style={submitButtonStyle}
+              style={styles.button}
               disabled={!editable}
               onPress={this.onButtonPress}
               invalid={inputInvalid}
-              backgroundColor={botBubbleColor}
+              backgroundColor={COLOR.CHAT_BUTTON}
             >
-              <ButtonText
-                className="rsc-button-text"
-                invalid={inputInvalid}
-                fontColor={botFontColor}
-              >
-                {submitButtonContent}
-              </ButtonText>
+                <Image
+                  style={styles.buttonImage}
+                  source={require('../../assets/images/ic_send.png')}
+                />
             </Button>
-          </Footer>
+          </View>
         </InputView>
       </ChatBotContainer>
     );
@@ -637,7 +680,7 @@ ChatBot.defaultProps = {
   inputAttributes: {},
   inputStyle: {},
   keyboardVerticalOffset: Platform.OS === 'ios' ? 44 : 0,
-  placeholder: 'Type the message ...',
+  placeholder: 'Type here...',
   headerComponent: undefined,
   style: {},
   submitButtonStyle: {},
